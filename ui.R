@@ -9,12 +9,16 @@ shinyUI(
       
       sidebarPanel(
         textInput(inputId = "sitemap", label = "Sitemap URL"),
-        submitButton(text = "Submit")
+        br(),
+        actionButton(inputId = "submit", label = "Submit")
       ),
       
       mainPanel(
+        tabsetPanel(
+          id = "tab",
+          tabPanel("Preview", tableOutput(outputId = "urlsTable"))
+        )
       )
-    
-      )
+    )
   )
 )
