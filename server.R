@@ -15,19 +15,32 @@ shinyServer(function(input, output) {
   
   # Get network log for each url
   getNetworkLog <- function(urls){
-    for(i in 1: nrow(urls)){
+    for(i in 1:nrow(urls)){
       pJS <- phantom()
       Sys.sleep(5) # give the binary a moment
       remDr <- remoteDriver(browserName = "phantom")
       remDr$open()
       result <- remDr$phantomExecute("var page = this;
-                                    page.onResourceRequested = function (req) {
-                                      if (req.url.indexOf('collect?') > -1) {
-                                        var collect = req.url;
-                                        console.log(collect);
+                                      var fs = require('fs');
+                                      page.onResourceRequested = function (req) {
+                                        if (req.url.indexOf('analytics.com/collect?') > -1) {
+                                          var collect = req.url;
+                                          console.log(collect);
+
+                                          try{
+                                            fs.write('output.txt',collect+'\\n','a',function(err){
+                                              if(err) {
+                                                console.log(err);
+                                              } else {
+                                                  console.log('The file was saved!');
+                                              }
+                                            });
+                                          } catch(e){
+                                            console.log(e);
+                                          }
+                                        }
                                       }
-                                    }
-                                  ")
+                                    ")
       remDr$navigate(urls[i,1])
       pJS$stop()
     }
@@ -39,7 +52,9 @@ shinyServer(function(input, output) {
     isolate({
       output <- getSitemapUrls(input$sitemap)
       getNetworkLog(output)
-      output
+      analytics <- read.table(file = "output.txt", col.names = c("url"))
+      unlink("output.txt")
+      analytics
     })
   })
 
