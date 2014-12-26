@@ -16,7 +16,7 @@ shinyUI(
       mainPanel(
         tabsetPanel(
           id = "tab",
-          tabPanel("Preview", tableOutput(outputId = "urlsTable"))
+          tabPanel("Preview", dataTableOutput(outputId = "urlsTable"))
         )
       )
     )
