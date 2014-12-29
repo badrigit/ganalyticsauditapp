@@ -1,9 +1,16 @@
 library(compiler)
 
-# Parse XML file
+# Parse XML from URL
 getSitemapUrls <- cmpfun(function(sitemapURL){
   sitemap <- htmlTreeParse(sitemapURL, useInternalNodes = T)
   urls <- data.frame(URL=xpathSApply(sitemap, "//url/loc", xmlValue))
+  return(urls)
+})
+
+# Parse XML from file
+getSitemapUrlsFromFile <- cmpfun(function(sitemap){
+  urls <- xmlToDataFrame(doc = sitemap)[-1,] # Skipped first row, may skip first Url
+  urls <- data.frame(URL=urls[,"loc"])
   return(urls)
 })
 
