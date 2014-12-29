@@ -33,8 +33,10 @@ getNetworkLog <- cmpfun(function(urls){
     result <- remDr$phantomExecute("var page = this;
                                      var fs = require('fs');
                                      page.onResourceRequested = function (req) {
-                                     if (req.url.indexOf('analytics.com/collect?') > -1||
-                                     req.url.indexOf('analytics.com/r/collect?') > -1) {
+                                     if (req.url.indexOf('analytics.com/collect?') > -1 ||
+                                     req.url.indexOf('analytics.com/r/collect?') > -1 ||
+                                     req.url.indexOf('utm.gif?') > -1 || 
+                                     req.url.indexOf('googletagmanager.com') > -1) {
                                      var collect = req.url;
                                      console.log(collect);
                                      console.log(page.url);
