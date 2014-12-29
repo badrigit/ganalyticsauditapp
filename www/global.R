@@ -1,19 +1,21 @@
+library(compiler)
+
 # Parse XML file
-getSitemapUrls <- function(sitemapURL){
+getSitemapUrls <- cmpfun(function(sitemapURL){
   sitemap <- htmlTreeParse(sitemapURL, useInternalNodes = T)
   urls <- data.frame(URL=xpathSApply(sitemap, "//url/loc", xmlValue))
   return(urls)
-}
+})
 
 # Get Analytics URL parameters
-getAnalyticsUrlParam <- function(analyticsUrl){
+getAnalyticsUrlParam <- cmpfun(function(analyticsUrl){
   parseUrl <- parse_url(analyticsUrl)
   params <- cbind(parseUrl$query$dl, parseUrl$query$t, parseUrl$query$tid)
   return(params)
-}
+})
 
 # Get network log for each url
-getNetworkLog <- function(urls){
+getNetworkLog <- cmpfun(function(urls){
   withProgress(message = paste("Total Number of URLs: ",nrow(urls),sep = ""),
                min = 1, 
                max = nrow(urls), expr = for(i in 1:nrow(urls)){
@@ -51,4 +53,4 @@ getNetworkLog <- function(urls){
     pJS$stop()
   }
   )
-}
+})
