@@ -3,7 +3,8 @@ library(shiny)
 shinyUI(
   fluidPage(
     
-    titlePanel(title = "Audit Application", windowTitle = "Web Analytics Audit"),
+    titlePanel(list(HTML("<img src='~/Desktop/Playground/AuditApp/www/logo.png'/>"), "Analytics Audit"),
+               windowTitle = "Web Analytics Audit"),
     
     sidebarLayout(
       
