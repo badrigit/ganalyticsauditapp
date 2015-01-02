@@ -1,4 +1,5 @@
 library(compiler)
+library(data.table)
 
 # Parse XML from URL
 getSitemapUrls <- cmpfun(function(sitemapURL){
@@ -21,6 +22,40 @@ getAnalyticsUrlParam <- cmpfun(function(analyticsUrl){
   return(params)
 })
 
+# Process Network Log
+processNetWorkLog <- function(data){
+  data <- data[,-ncol(data)] # Remove last column
+  colnames(data) <- c("Page", "NetLog")
+  dt <- data.table(data)
+  groupByPage <- dt[,length(NetLog),by=Page]
+  
+  # Get unique pages
+  pages <- unique(data[,"Page"])
+  
+  maxCols <- max(groupByPage[,V1]) + 1
+  maxRows <- length(pages)
+  
+  # Initialise matrix
+  processMatrix <- matrix(ncol = maxCols, nrow = maxRows)
+  
+  for(i in 1:maxRows){
+    sub <- dt[Page==pages[i],]
+    sub <- as.data.frame(sub)
+    processMatrix[i,1] <- as.character(pages[i]) # page
+    for(j in 1:nrow(sub)){
+      if(grepl("googletagmanager",sub[j,2]) == TRUE){
+        processMatrix[i,3] = as.character(sub[j,2])
+      } else if(grepl("collect",sub[j,2]) == TRUE){
+        processMatrix[i,2] = as.character(sub[j,2])
+      } else if(grepl("utm.gif",sub[j,2]) == TRUE){
+        processMatrix[i,4] = as.character(sub[j,2])
+      }
+    }
+  }
+  
+  return(processMatrix)
+}
+
 # Get network log for each url
 getNetworkLog <- cmpfun(function(urls){
   withProgress(message = paste("Total Number of URLs: ",nrow(urls),sep = ""),
@@ -40,9 +75,15 @@ getNetworkLog <- cmpfun(function(urls){
                                      var collect = req.url;
                                      console.log(collect);
                                      console.log(page.url);
+
+                                     var content = [
+                                        page.url,
+                                        collect,
+                                        '\\n'
+                                     ];
                                      
                                      try{
-                                     fs.write('output.txt',collect+'\\n','a',function(err){
+                                     fs.write('output.txt',content.join(','),'a',function(err){
                                      if(err) {
                                      console.log(err);
                                      } else {
