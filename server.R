@@ -28,16 +28,19 @@ shinyServer(function(input, output, session) {
     isolate({
       urls <- getSitemapUrls(dataInput())
       getNetworkLog(urls)
-      analytics <- read.table(file = "output.txt", col.names = c("url"))
-      output <- data.frame(Url = character(0), 
+      data <- read.table(file = "output.txt", sep = ",", row.names = NULL)
+      'output <- data.frame(Url = character(0), 
                            Type = character(0), 
                            Property = character(0),
                            stringsAsFactors=FALSE)
+      
       for(i in 1:nrow(analytics)){
         output[i,] <- getAnalyticsUrlParam(analytics[i,])
-      }
+      }'
+      
+      output <- processNetWorkLog(data)
       unlink("output.txt")
-      output
+      data.frame(output)
     })
   })
 
