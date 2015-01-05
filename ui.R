@@ -36,7 +36,7 @@ shinyUI(
       mainPanel(
         tabsetPanel(
           id = "tab",
-          tabPanel("Preview", dataTableOutput(outputId = "urlsTable"))
+          tabPanel("Dashboard", htmlOutput(outputId = "sample"))
         )
       )
     )

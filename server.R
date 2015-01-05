@@ -3,6 +3,7 @@ library(XML)
 library(RSelenium)
 library(httr)
 library(RCurl)
+library(googleVis)
 
 shinyServer(function(input, output, session) {
   
@@ -22,7 +23,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$urlsTable <- renderDataTable({
+  outputData <- reactive({
     if(input$submit == 0)
       return()
     isolate({
@@ -40,8 +41,15 @@ shinyServer(function(input, output, session) {
       
       output <- processNetWorkLog(data)
       unlink("output.txt")
-      data.frame(output)
+      output
     })
   })
-
+  
+  output$sample <- renderGvis({
+    if(input$submit == 0)
+      return()
+    isolate({
+      gvisTable(data = outputData())
+    })
+  })
 })
