@@ -18,7 +18,18 @@ getSitemapUrlsFromFile <- cmpfun(function(sitemap){
 # Get Analytics URL parameters
 getAnalyticsUrlParam <- cmpfun(function(analyticsUrl){
   parseUrl <- parse_url(analyticsUrl)
-  params <- cbind(parseUrl$query$dl, parseUrl$query$t, parseUrl$query$tid)
+  if(grepl("utmt",analyticsUrl) == TRUE){
+    params <- cbind(parseUrl$query$utmhn, parseUrl$query$utmdt, parseUrl$query$utmt, parseUrl$query$utmac, "Classic")
+  } else {
+    params <- cbind(parseUrl$query$dl, parseUrl$query$dt, parseUrl$query$t, parseUrl$query$tid, "Universal")
+  }
+  return(params)
+})
+
+# Get GTM URL parameters
+getGTMUrlParam <- cmpfun(function(gtmUrl){
+  parseUrl <- parse_url(gtmUrl[,"NetLog"])
+  params <- cbind(gtmUrl[,1], parseUrl$query$id)
   return(params)
 })
 
@@ -80,10 +91,39 @@ getNetworkLog <- cmpfun(function(urls){
 })
 
 # Get total tag manager
-getGTMCount <- function(data){
+getDashboard <- function(data){
   totalUrls <- length(unique(data[,"Page"]))
   totalGTM <- nrow(subset(data, grepl("googletagmanager.com", NetLog)))
-  totalPageviews <- nrow(subset(data, grepl("t=pageview.*tid=UA-", NetLog)))
-  gtmCount <- data.table(Category=c("# of Urls","# of GTM", "# of Pageviews"), Count=c(totalUrls,totalGTM,totalPageviews))
+  totalPageviews <- nrow(subset(data, grepl("(t=pageview.*tid=UA-)|(utmt=pageview)", NetLog)))
+  totalEvents <- nrow(subset(data, grepl("(t=event.*tid=UA-)|(utmt=event)", NetLog)))
+  gtmCount <- data.table(Category=c("# of Urls","# of GTM", "# of Pageviews", "# of Events"),
+                         Count=c(totalUrls,totalGTM,totalPageviews,totalEvents))
   return(gtmCount)
+}
+
+# Get analytics details
+getAnalyticsData <- function(data){
+  getPageviews <- subset(data, grepl("(t=pageview)|(utmt=pageview)",NetLog))
+  output <- data.frame(Url = character(0),
+                       Title = character(0),
+                       Type = character(0), 
+                       Property = character(0),
+                       AnalyticsType = character(0),
+                       stringsAsFactors=FALSE)
+  for(i in 1:nrow(getPageviews)){
+    output[i,] <- getAnalyticsUrlParam(getPageviews[i,"NetLog"])
+  }
+  return(output)
+}
+
+# Get Tag manager details
+getGTMData <- function(data){
+  getGTM <- subset(data, grepl("googletagmanager",NetLog))
+  output <- data.frame(Url = character(0),
+                       GTMID = character(0),
+                       stringsAsFactors=FALSE)
+  for(i in 1:nrow(getGTM)){
+    output[i,] <- getGTMUrlParam(getGTM[i,])
+  }
+  return(output)
 }

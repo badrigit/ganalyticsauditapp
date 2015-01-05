@@ -45,15 +45,31 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  output$sample <- renderGvis({
+  output$dashboardOutput <- renderGvis({
     if(input$submit == 0)
       return()
     isolate({
-      dashboardData <- getGTMCount(outputData())
+      dashboardData <- getDashboard(outputData())
       gvisBarChart(data = dashboardData, options = list(
         legend="bottom",
         title="Overview of tags fired"
       ))
+    })
+  })
+  
+  output$analyticsOuput <- renderDataTable({
+    if(input$submit == 0)
+      return()
+    isolate({
+      output <- getAnalyticsData(outputData())
+    })
+  })
+  
+  output$gtmOuput <- renderDataTable({
+    if(input$submit == 0)
+      return()
+    isolate({
+      output <- getGTMData(outputData())
     })
   })
 })

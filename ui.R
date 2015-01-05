@@ -37,7 +37,9 @@ shinyUI(
       mainPanel(
         tabsetPanel(
           id = "tab",
-          tabPanel("Dashboard",htmlOutput(outputId = "sample"))
+          tabPanel("Dashboard",htmlOutput(outputId = "dashboardOutput")),
+          tabPanel("Google Tag Manager",dataTableOutput(outputId = "gtmOuput")),
+          tabPanel("Google Analytics",dataTableOutput(outputId = "analyticsOuput"))
         )
       )
     )
