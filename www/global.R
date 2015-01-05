@@ -27,33 +27,7 @@ processNetWorkLog <- function(data){
   data <- data[,-ncol(data)] # Remove last column
   colnames(data) <- c("Page", "NetLog")
   dt <- data.table(data)
-  groupByPage <- dt[,length(NetLog),by=Page]
-  
-  # Get unique pages
-  pages <- unique(data[,"Page"])
-  
-  maxCols <- max(groupByPage[,V1]) + 1
-  maxRows <- length(pages)
-  
-  # Initialise matrix
-  processMatrix <- matrix(ncol = maxCols, nrow = maxRows)
-  
-  for(i in 1:maxRows){
-    sub <- dt[Page==pages[i],]
-    sub <- as.data.frame(sub)
-    processMatrix[i,1] <- as.character(pages[i]) # page
-    for(j in 1:nrow(sub)){
-      if(grepl("googletagmanager",sub[j,2]) == TRUE){
-        processMatrix[i,3] = as.character(sub[j,2])
-      } else if(grepl("collect",sub[j,2]) == TRUE){
-        processMatrix[i,2] = as.character(sub[j,2])
-      } else if(grepl("utm.gif",sub[j,2]) == TRUE){
-        processMatrix[i,4] = as.character(sub[j,2])
-      }
-    }
-  }
-  
-  return(processMatrix)
+  return(data)
 }
 
 # Get network log for each url
