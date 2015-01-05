@@ -49,7 +49,11 @@ shinyServer(function(input, output, session) {
     if(input$submit == 0)
       return()
     isolate({
-      gvisTable(data = outputData())
+      dashboardData <- getGTMCount(outputData())
+      gvisBarChart(data = dashboardData, options = list(
+        legend="bottom",
+        title="Overview of tags fired"
+      ))
     })
   })
 })

@@ -78,3 +78,12 @@ getNetworkLog <- cmpfun(function(urls){
   }
   )
 })
+
+# Get total tag manager
+getGTMCount <- function(data){
+  totalUrls <- length(unique(data[,"Page"]))
+  totalGTM <- nrow(subset(data, grepl("googletagmanager.com", NetLog)))
+  totalPageviews <- nrow(subset(data, grepl("t=pageview.*tid=UA-", NetLog)))
+  gtmCount <- data.table(Category=c("# of Urls","# of GTM", "# of Pageviews"), Count=c(totalUrls,totalGTM,totalPageviews))
+  return(gtmCount)
+}
