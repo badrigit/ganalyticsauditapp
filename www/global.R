@@ -72,8 +72,8 @@ getNetworkLog <- cmpfun(function(urls){
                                      ")
       
     remDr$navigate(urls[i,1])
-      
-    incProgress(amount = 1/nrow(urls), message = paste("Remaining Urls: ", nrow(urls) - i, sep=""))
+    incProgress(amount = 1/nrow(urls), message = paste("Remaining Urls: ", 
+                                                           nrow(urls) - i, "Currently Processing: ", urls[i,1], sep="\n"))
     pJS$stop()
   }
   )

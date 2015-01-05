@@ -9,6 +9,7 @@ shinyUI(
     sidebarLayout(
       
       sidebarPanel(
+        
         radioButtons(inputId = "inputType",
                      label = "InputType", 
                      choices = c("Sitemap URL" = "sitemapURL", "File Upload" = "fileUpload")),
@@ -36,7 +37,7 @@ shinyUI(
       mainPanel(
         tabsetPanel(
           id = "tab",
-          tabPanel("Dashboard", htmlOutput(outputId = "sample"))
+          tabPanel("Dashboard",htmlOutput(outputId = "sample"))
         )
       )
     )
