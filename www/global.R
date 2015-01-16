@@ -68,7 +68,7 @@ getNetworkLog <- cmpfun(function(urls){
                                      ];
                                      
                                      try{
-                                     fs.write('output.txt',content.join(','),'a',function(err){
+                                     fs.write('/usr/share/iauditOutput/output.txt',content.join(','),'a',function(err){
                                      if(err) {
                                      console.log(err);
                                      } else {
