@@ -30,10 +30,10 @@ shinyServer(function(input, output, session) {
     isolate({
       urls <- getSitemapUrls(dataInput())
       getNetworkLog(urls) # Get network log by connecting to phantomjs
-      data <- read.table(file = "/usr/share/iauditOutput/output.txt", 
+      data <- read.table(file = "output.txt", 
                          sep = ",", row.names = NULL) # Read network log text file
       output <- processNetWorkLog(data) # Process log file
-      unlink("/usr/share/iauditOutput/output.txt") # Delete log text file
+      unlink("output.txt") # Delete log text file
       output
     })
   })
