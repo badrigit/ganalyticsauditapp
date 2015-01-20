@@ -1,7 +1,8 @@
 library(shiny)
+library(shinythemes)
 
 shinyUI(
-  fluidPage(
+  fluidPage(theme = shinytheme("flatly"),
     
     titlePanel(list(HTML("<img src='logo.png'/>"), "Analytics Audit"),
                windowTitle = "Web Analytics Audit"),
